@@ -97,22 +97,20 @@
 
 <div class="section">
   <h2>🎖️ Sigils</h2>
-  <button class="button" onclick="randomizeSigil()">Randomize Sigil</button>
-  <div id="sigilList" class="list"></div>
-  <div style="margin-top:15px;">
-    <strong>Sigil Effects:</strong>
-    <ul>
-      <li><b>Flame Crest:</b> Adds a temporary fire shield that blocks 1 tag.</li>
-      <li><b>Moonstone Sigil:</b> Allows invisibility for 5 seconds.</li>
-      <li><b>Storm Rune:</b> Stuns a chaser for 7 seconds when activated.</li>
-      <li><b>Void Seal:</b> Grants 10 seconds immunity from Shadow Marks.</li>
-    </ul>
+  <div>
+    <label><input type="checkbox" class="powerupCheckbox" onchange="powerupCheckboxChanged(this)" value="Valley Crest (Verdant Fields)" /> Valley Crest (Verdant Fields)</label>
+    <div class="powerup-desc">You can refuse a duel and stay in the realm for up to 1 minute (Get a free walk back)</div>
+
+    <label><input type="checkbox" class="powerupCheckbox" onchange="powerupCheckboxChanged(this)" value="Moonstone Sigil (Skyreach Deck)" /> Moonstone Sigil (Skyreach Deck)</label>
+    <div class="powerup-desc">Pick two duel-winning actions</div>
+
+    <label><input type="checkbox" class="powerupCheckbox" onchange="powerupCheckboxChanged(this)" value="Storm Rune (Wildlands)" /> Storm Rune (Wildlands)</label>
+    <div class="powerup-desc">Win your duel immediately</div>
   </div>
-  <div id="sigilUsedList" class="list" style="margin-top:15px;">
-    <strong>Your Sigils (check to use):</strong>
-    <!-- Used sigils will appear here -->
+  <div id="powerupSelected" class="list" style="margin-top: 15px;">
+    <strong>Selected Power-ups (check to use):</strong>
+    <!-- Used powerups will appear here -->
   </div>
-</div>
 
 <div class="section">
   <h2>⚔️ Characters</h2>
