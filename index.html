@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rivenwood Realms Hub</title>
+  <style>
+    body {
+      font-family: 'Trebuchet MS', sans-serif;
+      background: #111;
+      color: #fff;
+      padding: 20px;
+      margin: 0;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #fff;
+    }
+    .section {
+      border: 2px solid #333;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px auto;
+      background: #222;
+      max-width: 480px;
+    }
+    .button {
+      padding: 10px 20px;
+      margin: 10px 0 5px 0;
+      border: none;
+      border-radius: 8px;
+      background: #8c52ff;
+      color: #fff;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .button:hover {
+      background: #a572ff;
+    }
+    select, input[type="text"] {
+      margin-top: 10px;
+      background: #333;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 5px;
+      padding: 5px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .list {
+      margin-top: 10px;
+      background: #333;
+      border-radius: 8px;
+      padding: 10px;
+      min-height: 1.4em;
+      white-space: pre-wrap;
+      font-weight: normal;
+    }
+    label {
+      display: block;
+      margin: 5px 0;
+      cursor: pointer;
+    }
+    .powerup-desc {
+      font-style: italic;
+      font-size: 0.9em;
+      margin-left: 22px;
+      color: #ccc;
+      margin-bottom: 8px;
+    }
+    #sigilUsedList label, #powerupUsedList label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #444;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin-bottom: 5px;
+      user-select: none;
+    }
+    #sigilUsedList input[type=checkbox], #powerupUsedList input[type=checkbox] {
+      transform: scale(1.3);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🌿 Rivenwood Realms: Game Hub 🌿</h1>
+
+<div class="section">
+  <h2>👤 Sign In</h2>
+  <input type="text" id="playerName" placeholder="Enter your name" />
+  <button class="button" onclick="addPlayer()">Join Game</button>
+  <div id="players" class="list"></div>
+</div>
+
+<div class="section">
+  <h2>🎖️ Sigils</h2>
+  <button class="button" onclick="randomizeSigil()">Randomize Sigil</button>
+  <div id="sigilList" class="list"></div>
+  <div style="margin-top:15px;">
+    <strong>Sigil Effects:</strong>
+    <ul>
+      <li><b>Flame Crest:</b> Adds a temporary fire shield that blocks 1 tag.</li>
+      <li><b>Moonstone Sigil:</b> Allows invisibility for 5 seconds.</li>
+      <li><b>Storm Rune:</b> Stuns a chaser for 7 seconds when activated.</li>
+      <li><b>Void Seal:</b> Grants 10 seconds immunity from Shadow Marks.</li>
+    </ul>
+  </div>
+  <div id="sigilUsedList" class="list" style="margin-top:15px;">
+    <strong>Your Sigils (check to use):</strong>
+    <!-- Used sigils will appear here -->
+  </div>
+</div>
+
+<div class="section">
+  <h2>⚔️ Characters</h2>
+  <select id="characterSelect" onchange="showCharacterPower()">
+    <option value="Lira Stormveil">Lira Stormveil</option>
+    <option value="Kael Thornblade">Kael Thornblade</option>
+    <option value="Nyx Everflame">Nyx Everflames</option>
+    <option value="Eira Duskwhisper">Eira Duskwhisper</option>
+  </select>
+  <button class="button" onclick="selectCharacter()">Select Character</button>
+  <div id="characterList" class="list"></div>
+  <div id="characterPower" class="powerup-desc"></div>
+</div>
+
+<div class="section">
+  <h2>🏞️ Realms</h2>
+  <select id="realmSelect">
+    <option>Skyreach Deck</option>
+    <option>Verdant Fields</option>
+    <option>Wildlands</option>
+  </select>
+  <button class="button" onclick="selectRealm()">Select Realm</button>
+  <div id="realmList" class="list"></div>
+</div>
+
+<div class="section">
+  <h2>☠️ Shadow Marks</h2>
+  <button class="button" onclick="addShadowMark()">Add Shadow Mark</button>
+  <button class="button" style="background:#ff5555;" onclick="removeShadowMark()">Remove Shadow Mark</button>
+  <div id="shadowMarks" class="list">Shadow Marks: 0</div>
+</div>
+
+<div class="section">
+  <h2>✨ Power-ups</h2>
+  <div>
+    <label><input type="checkbox" class="powerupCheckbox" onchange="powerupCheckboxChanged(this)" value="Fire Feather" /> Fire Feather</label>
+    <div class="powerup-desc">Grants a 5-second sprint and tags freeze opponents for 3s.</div>
+
+    <label><input type="checkbox" class="powerupCheckbox" onchange="powerupCheckboxChanged(this)" value="Ice Feather" /> Ice Feather</label>
+    <div class="powerup-desc">Freeze chasers on tag for 7 seconds.</div>
+
+    <label><input type="checkbox" class="powerupCheckbox" onchange="powerupCheckboxChanged(this)" value="Invisible Clip" /> Invisible Clip</label>
+    <div class="powerup-desc">Makes you invisible to chasers for 10 seconds once activated.</div>
+
+    <label><input type="checkbox" class="powerupCheckbox" onchange="powerupCheckboxChanged(this)" value="Speed Boots" /> Speed Boots</label>
+    <div class="powerup-desc">Boosts your running speed for 6 seconds.</div>
+  </div>
+  <div id="powerupSelected" class="list" style="margin-top: 15px;">
+    <strong>Selected Power-ups (check to use):</strong>
+    <!-- Used powerups will appear here -->
+  </div>
+</div>
+
+<!-- Sound Effects -->
+<audio id="soundRandomize" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg" preload="auto"></audio>
+<audio id="soundUseSigil" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
+
+<script>
+  let players = [];
+  let shadowCount = 0;
+  let usedSigils = [];
+  let usedPowerups = [];
+  let selectedPowerups = new Set();
+
+  const characterPowers = {
+    "Lira Stormveil": "5 seconds of invincibility sprint — run through tags safely!",
+    "Kael Thornblade": "To be tagged, the chaser must beat Kael in rock-paper-scissors first.",
+    "Nyx Everflame": "Freeze any chaser you tag for 7 seconds.",
+    "Eira Duskwhisper": "Vanish for 10 seconds once per game to avoid being tagged."
+  };
+
+  const sigils = ["Flame Crest", "Moonstone Sigil", "Storm Rune", "Void Seal"];
+
+  function addPlayer() {
+    let name = document.getElementById("playerName").value.trim();
+    if (name && !players.includes(name)) {
+      players.push(name);
+      updatePlayers();
+      document.getElementById("playerName").value = "";
+    }
+  }
+
+  function updatePlayers() {
+    document.getElementById("players").textContent = players.join(", ") || "No players yet.";
+  }
+
+  function randomizeSigil() {
+    const sound = document.getElementById('soundRandomize');
+    sound.currentTime = 0;
+    sound.play();
+
+    let availableSigils = sigils.filter(s => !usedSigils.includes(s));
+    if (availableSigils.length === 0) {
+      alert("You have used all sigils!");
+      return;
+    }
+    const result = availableSigils[Math.floor(Math.random() * availableSigils.length)];
+    document.getElementById("sigilList").textContent = `You got: ${result}`;
+    addUsedSigil(result);
+  }
+
+  function addUsedSigil(name) {
+    if (usedSigils.includes(name)) return;
+    usedSigils.push(name);
+
+    const container = document.getElementById("sigilUsedList");
+
+    // Create a label with checkbox
+    const label = document.createElement("label");
+    label.textContent = name;
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.style.marginLeft = "10px";
+    checkbox.title = "Check when you use this sigil";
+
+    checkbox.addEventListener("change", () => {
+      if (checkbox.checked) {
+        // play sound
+        const sound = document.getElementById('soundUseSigil');
+        sound.currentTime = 0;
+        sound.play();
+
+        // Remove sigil from usedSigils and from list
+        usedSigils = usedSigils.filter(s => s !== name);
+        container.removeChild(label);
+        // Clear main sigil display if it matches
+        let mainSigilText = document.getElementById("sigilList").textContent;
+        if (mainSigilText.includes(name)) {
+          document.getElementById("sigilList").textContent = "";
+        }
+      }
+    });
+
+    label.appendChild(checkbox);
+    container.appendChild(label);
+  }
+
+  function selectCharacter() {
+    const sel = document.getElementById("characterSelect");
+    const char = sel.value;
+    if (!players.length) {
+      alert("Please sign in first!");
+      return;
+    }
+    document.getElementById("characterList").textContent = `You selected: ${char}`;
+    showCharacterPower();
+  }
+
+  function showCharacterPower() {
+    const sel = document.getElementById("characterSelect");
+    const char = sel.value;
+    const desc = characterPowers[char] || "";
+    document.getElementById("characterPower").textContent = desc;
+  }
+
+  function selectRealm() {
+    const realm = document.getElementById("realmSelect").value;
+    if (!players.length) {
+      alert("Please sign in first!");
+      return;
+    }
+    document.getElementById("realmList").textContent = `Your realm: ${realm}`;
+  }
+
+  function addShadowMark() {
+    shadowCount++;
+    updateShadowMarks();
+  }
+  function removeShadowMark() {
+    if (shadowCount > 0) {
+      shadowCount--;
+      updateShadowMarks();
+    }
+  }
+  function updateShadowMarks() {
+    document.getElementById("shadowMarks").textContent = `Shadow Marks: ${shadowCount}`;
+  }
+
+  function powerupCheckboxChanged(checkbox) {
+    if (checkbox.checked) {
+      if (!selectedPowerups.has(checkbox.value)) {
+        selectedPowerups.add(checkbox.value);
+        addUsedPowerup(checkbox.value);
+      }
+    } else {
+      // Unchecking from main list should not remove from used list automatically
+      // but you can remove from used list manually by checking used list box
+      selectedPowerups.delete(checkbox.value);
+    }
+    updatePowerupSelected();
+  }
+
+  function addUsedPowerup(name) {
+    if (usedPowerups.includes(name)) return;
+    usedPowerups.push(name);
+
+    const container = document.getElementById("powerupSelected");
+
+    // Create a label with checkbox
+    const label = document.createElement("label");
+    label.textContent = name;
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.style.marginLeft = "10px";
+    checkbox.title = "Check when you use this power-up";
+
+    checkbox.addEventListener("change", () => {
+      if (checkbox.checked) {
+        // play sound
+        const sound = document.getElementById('soundUseSigil');
+        sound.currentTime = 0;
+        sound.play();
+
+        // Remove powerup from usedPowerups and from list
+        usedPowerups = usedPowerups.filter(p => p !== name);
+        container.removeChild(label);
+        // Also uncheck main checkbox if it's still checked
+        let mainCheckbox = [...document.querySelectorAll(".powerupCheckbox")].find(chk => chk.value === name);
+        if (mainCheckbox) mainCheckbox.checked = false;
+      }
+    });
+
+    label.appendChild(checkbox);
+    container.appendChild(label);
+  }
+
+  function updatePowerupSelected() {
+    const selected = [...selectedPowerups];
+    // Display selected in the main section (under the powerup checkboxes)
+    // Actually we show the usedPowerups in the used list only
+  }
+</script>
+
+</body>
+</html>
+
